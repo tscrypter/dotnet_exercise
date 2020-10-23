@@ -1,0 +1,11 @@
+version: '3'
+services:
+    mysql:
+      image: mysql:8
+      environment:
+        - MYSQL_DATABASE=daycare 
+        - MYSQL_ROOT_PASSWORD=dogdaycare 
+        - MYSQL_USER=dogdaycare
+        - MYSQL_PASSWORD=dogdaycare
+      ports:
+        - 3306:3306

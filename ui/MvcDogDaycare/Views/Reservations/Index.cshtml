@@ -1,0 +1,48 @@
+@model IEnumerable<MvcDogDaycare.Models.Reservation>
+
+@{
+    ViewData["Title"] = "Reservations";
+}
+
+<h1>Reservations</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PetName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DropOffDttm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PickUpDttm)
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var reservation in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => reservation.PetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => reservation.DropOffDttm)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => reservation.PickUpDttm)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@reservation.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@reservation.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@reservation.Id">Delete</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</p>
