@@ -24,8 +24,9 @@ namespace MvcDogDaycare.Controllers
                 Id = reservation.Id,
                 DropOffDttm = reservation.DropOffDttm,
                 PickUpDttm = reservation.PickUpDttm,
-                Pet = reservation.Pet
-            }).ToListAsync());
+                Pet = reservation.Pet,
+                PetId = reservation.PetId
+            }).OrderBy(r => r.DropOffDttm).ToListAsync());
         }
 
         public IActionResult Create()
@@ -35,17 +36,43 @@ namespace MvcDogDaycare.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            return View(await _context.Reservation.FirstOrDefaultAsync(record => record.Id == id));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reservation = await _context.Reservation
+                .FirstOrDefaultAsync(record => record.Id == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            
+            return View(reservation);
         }
 
         public async Task<IActionResult> Edit(int? id)
         {
-            return View(await _context.Reservation.FirstOrDefaultAsync(record => record.Id == id));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reservation = await _context.Reservation
+                .FirstOrDefaultAsync(record => record.Id == id);
+
+            var dogs = await _context.Dog.ToListAsync();
+            ViewBag.ListOfDogs = dogs;
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+            return View(reservation);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id, PetName, DropOffDttm, PickUpDttm")] Reservation reservation)
+        public async Task<IActionResult> Edit(int id, [Bind("Id, PetId, DropOffDttm, PickUpDttm")] Reservation reservation)
         {
             if (id != reservation.Id)
             {
@@ -56,6 +83,8 @@ namespace MvcDogDaycare.Controllers
             {
                 try
                 {
+                    var dog = await _context.Dog.FirstOrDefaultAsync(dog => dog.Id == reservation.PetId);
+                    reservation.Pet = dog;
                     _context.Update(reservation);
                     await _context.SaveChangesAsync();
                 }
@@ -90,6 +119,14 @@ namespace MvcDogDaycare.Controllers
             }
 
             var reservation = await _context.Reservation
+                .Select(res => new Reservation
+                {
+                    Id = res.Id,
+                    DropOffDttm = res.DropOffDttm,
+                    PickUpDttm = res.PickUpDttm,
+                    Pet = res.Pet,
+                    PetId = res.PetId
+                })
                 .FirstOrDefaultAsync(record => record.Id == id);
             if (reservation == null)
             {

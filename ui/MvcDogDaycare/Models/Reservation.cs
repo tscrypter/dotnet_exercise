@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MvcDogDaycare.Models
 {
@@ -17,6 +18,8 @@ namespace MvcDogDaycare.Models
         [DataType(DataType.DateTime)]
         public DateTime PickUpDttm { get; set; }
 
+        [HiddenInput]
+        public int PetId { get; set; }
         public Dog Pet { get; set; }
     }
 }
