@@ -9,7 +9,7 @@ using ui.MvcDogDaycare.Data;
 namespace MvcDogDaycare.Migrations
 {
     [DbContext(typeof(DogDaycareContext))]
-    [Migration("20201023002648_InitialCreate")]
+    [Migration("20201023041818_Initial Create")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -19,7 +19,27 @@ namespace MvcDogDaycare.Migrations
                 .HasAnnotation("ProductVersion", "3.1.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ui.MvcDogDaycare.Models.Reservation", b =>
+            modelBuilder.Entity("MvcDogDaycare.Models.Dog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContactNumber")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Dog");
+                });
+
+            modelBuilder.Entity("MvcDogDaycare.Models.Reservation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -28,15 +48,24 @@ namespace MvcDogDaycare.Migrations
                     b.Property<DateTime>("DropOffDttm")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<string>("PetName")
-                        .HasColumnType("longtext CHARACTER SET utf8mb4");
+                    b.Property<int?>("PetId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PickUpDttm")
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PetId");
+
                     b.ToTable("Reservation");
+                });
+
+            modelBuilder.Entity("MvcDogDaycare.Models.Reservation", b =>
+                {
+                    b.HasOne("MvcDogDaycare.Models.Dog", "Pet")
+                        .WithMany("Reservations")
+                        .HasForeignKey("PetId");
                 });
 #pragma warning restore 612, 618
         }

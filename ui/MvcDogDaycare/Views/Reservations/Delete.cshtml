@@ -6,7 +6,7 @@
 
 <form asp-action="Delete"  asp-controller="Reservations">
     <input id="id" type="hidden" value="@Model.Id" />
-    <label>Are you sure you want to delete reservation for @Model.PetName on @Model.DropOffDttm</label>
+    <label>Are you sure you want to delete reservation for @Model.Pet.Name on @Model.DropOffDttm</label>
     <input id="submit" type="submit" value="Yes" />
 </form>
 <a asp-area="" asp-controller="Reservations" asp-action="Index">No, please go back</a>

@@ -19,32 +19,57 @@ namespace ui.MvcDogDaycare.Data
                     return; // DB has already been seeded
                 }
 
-                
+                var fido = new Dog
+                {
+                    ContactNumber = "555-555-5555",
+                    DateOfBirth = DateTime.Today.AddYears(-6),
+                    Name = "Fido"
+                };
+                var clifford = new Dog
+                {
+                    ContactNumber = "111-111-1111",
+                    DateOfBirth = DateTime.Today.AddYears(-1),
+                    Name = "Clifford"
+                };
+                context.Dog.AddRange(fido, clifford);                
                 context.Reservation.AddRange(
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(1).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(1).AddHours(17),
-                        PetName = "Fido"
+                        Pet = fido
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(2).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(2).AddHours(17),
-                        PetName = "Fido"
+                        Pet = fido
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(3).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(3).AddHours(17),
-                        PetName = "Fido"
+                        Pet = fido
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(4).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(4).AddHours(17),
-                        PetName = "Fido"
+                        Pet = fido
+                    },
+                    new Reservation
+                    {
+                        DropOffDttm = DateTime.Today.AddDays(1).AddHours(8),
+                        PickUpDttm = DateTime.Today.AddDays(1).AddHours(17),
+                        Pet = clifford
+                    },
+                    new Reservation
+                    {
+                        DropOffDttm = DateTime.Today.AddDays(3).AddHours(8),
+                        PickUpDttm = DateTime.Today.AddDays(3).AddHours(17),
+                        Pet = clifford
                     });
+                
                 context.SaveChanges();
             }
         }

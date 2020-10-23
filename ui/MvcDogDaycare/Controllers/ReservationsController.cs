@@ -19,7 +19,13 @@ namespace MvcDogDaycare.Controllers
         // GET
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Reservation.ToListAsync());
+            return View(await _context.Reservation.Select(reservation => new Reservation
+            {
+                Id = reservation.Id,
+                DropOffDttm = reservation.DropOffDttm,
+                PickUpDttm = reservation.PickUpDttm,
+                Pet = reservation.Pet
+            }).ToListAsync());
         }
 
         public IActionResult Create()

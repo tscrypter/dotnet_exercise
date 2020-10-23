@@ -8,8 +8,6 @@ namespace MvcDogDaycare.Models
     {
         [DisplayName("ID")]
         public int Id { get; set; }
-        [DisplayName("Pet Name")]
-        public string PetName { get; set; }
         
         [DisplayName("Drop Off Time")]
         [DataType(DataType.DateTime)]
@@ -18,6 +16,7 @@ namespace MvcDogDaycare.Models
         [DisplayName("Pick Up Time")]
         [DataType(DataType.DateTime)]
         public DateTime PickUpDttm { get; set; }
-        
+
+        public Dog Pet { get; set; }
     }
 }
