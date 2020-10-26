@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +30,36 @@ namespace MvcDogDaycare.Controllers
             }).OrderBy(r => r.DropOffDttm).ToListAsync());
         }
 
-        public IActionResult Create()
+        [HttpPost, ActionName("Create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateReservation([Bind("PetId, DropOffDttm, PickUpDttm")] Reservation reservation)
         {
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            var reservationDog = await _context.Dog
+                .Where(dog => dog.Id == reservation.PetId)
+                .FirstOrDefaultAsync();
+            if (reservationDog == null)
+            {
+                return NotFound();
+            }
+
+            reservation.Pet = reservationDog;
+
+            await _context.Reservation.AddAsync(reservation);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            var dogs = await _context.Dog.ToListAsync();
+            ViewBag.ListOfDogs = dogs;
+            
             return View();
         }
 
