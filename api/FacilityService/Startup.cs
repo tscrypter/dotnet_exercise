@@ -44,9 +44,12 @@ namespace FacilityService
             services.AddMetricsActuator();
             services.AddInfoActuator();
             services.AddEnvActuator();
-            
-            services.AddDiscoveryClient();
-            
+
+            if (!Configuration.GetValue<bool>("DisableServiceDiscovery"))
+            {
+                services.AddDiscoveryClient();
+            }
+
             services.AddDbContext<FacilityContext>(options =>
                 options.UseNpgsql(Configuration));
             
