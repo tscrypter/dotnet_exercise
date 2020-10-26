@@ -13,6 +13,7 @@ namespace ui.MvcDogDaycare.Data
             using (var context = new DogDaycareContext(
                 serviceProvider.GetRequiredService<DbContextOptions<DogDaycareContext>>()))
             {
+                context.Database.Migrate();
                 // Look for any reservations
                 if (context.Reservation.Any())
                 {
@@ -37,37 +38,43 @@ namespace ui.MvcDogDaycare.Data
                     {
                         DropOffDttm = DateTime.Today.AddDays(1).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(1).AddHours(17),
-                        Pet = fido
+                        Pet = fido,
+                        FacilityId = 1
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(2).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(2).AddHours(17),
-                        Pet = fido
+                        Pet = fido,
+                        FacilityId = 1
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(3).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(3).AddHours(17),
-                        Pet = fido
+                        Pet = fido,
+                        FacilityId = 1
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(4).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(4).AddHours(17),
-                        Pet = fido
+                        Pet = fido,
+                        FacilityId = 1
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(1).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(1).AddHours(17),
-                        Pet = clifford
+                        Pet = clifford,
+                        FacilityId = 1
                     },
                     new Reservation
                     {
                         DropOffDttm = DateTime.Today.AddDays(3).AddHours(8),
                         PickUpDttm = DateTime.Today.AddDays(3).AddHours(17),
-                        Pet = clifford
+                        Pet = clifford,
+                        FacilityId = 2
                     });
                 
                 context.SaveChanges();

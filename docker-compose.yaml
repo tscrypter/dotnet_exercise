@@ -1,20 +1,28 @@
 version: '3'
 services:
-    mysql:
-      image: mysql:8
+    mvc-db:
+      image: postgres:12.4
       environment:
-        - MYSQL_DATABASE=daycare 
-        - MYSQL_ROOT_PASSWORD=dogdaycare 
-        - MYSQL_USER=dogdaycare
-        - MYSQL_PASSWORD=dogdaycare
+        - POSTGRES_DB=daycare 
+        - POSTGRES_PASSWORD=dogdaycare 
+        - POSTGRES_USER=dogdaycare
       ports:
-        - 3306:3306
+        - 5432:5432
+    facility-db:
+      image: postgres:12.4
+      environment:
+        - POSTGRES_DB=facility
+        - POSTGRES_PASSWORD=dogdaycare
+        - POSTGRES_USER=dogdaycare
+      ports:
+        - 5431:5432
     eureka:
       image: steeltoeoss/eureka-server
       ports:
         - 8761:8761
       depends_on:
-        - mysql
+        - facility-db
+        - mvc-db
     spring-boot-admin:
       environment:
         - EUREKA_SERVICE_URL=http://eureka:8761
@@ -23,14 +31,31 @@ services:
         - "8889:8080"
       depends_on:
         - eureka
-#    mvc:
-#      build:
-#        context: ui/MvcDogDaycare/
-#      image: tscrypter/dogdaycaremvc:latest
-#      ports:
-#        - "80:8080"
-#      environment:
-#        - "MySql__client__ConnectionString=server=mysql;user=dogdaycare;password=dogdaycare;database=daycare"
-#        - "Eureka__Client__ServiceUrl=http://eureka:8761/eureka"
-#      depends_on:
-#        - eureka
+    facility-api:
+      build:
+        context: api/FacilityService/
+      image: tscrypter/facilityservice:latest
+      ports:
+        - "8081:80"
+      environment:
+        - "Postgres__Client__Host=facility-db"
+        - "Postgres__Client__Port=5432"
+        - "Postgres__Client__Username=dogdaycare"
+        - "Postgres__Client__Password=dogdaycare"
+        - "Postgres__Client__DataBase=facility"
+      depends_on:
+        - spring-boot-admin
+    mvc:
+      build:
+        context: ui/MvcDogDaycare/
+      image: tscrypter/dogdaycaremvc:latest
+      ports:
+        - "8080:80"
+      environment:
+        - "Postgres__Client__Host=mvc-db"
+        - "Postgres__Client__Port=5432"
+        - "Postgres__Client__Username=dogdaycare"
+        - "Postgres__Client__Password=dogdaycare"
+        - "Postgres__Client__DataBase=daycare"
+      depends_on:
+        - facility-api

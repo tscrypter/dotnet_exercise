@@ -7,9 +7,12 @@ namespace MvcDogDaycare.Models
 {
     public class Dog
     {
+        
+        [Required]
         [DisplayName("ID")]
         public int Id { get; set; }
         
+        [Required]
         [DisplayName("Name")]
         public string Name { get; set; }
         
@@ -17,6 +20,7 @@ namespace MvcDogDaycare.Models
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
         
+        [Required]
         [DisplayName("Contact Number")]
         [DataType(DataType.PhoneNumber)]
         public String ContactNumber { get; set; }

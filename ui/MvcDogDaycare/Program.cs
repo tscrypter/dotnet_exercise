@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Steeltoe.Discovery.Client;
+using Steeltoe.Extensions.Logging;
 using Steeltoe.Management.Endpoint;
 using ui.MvcDogDaycare.Data;
 
@@ -41,6 +42,10 @@ namespace MvcDogDaycare
                 .AddMetricsActuator()
                 .AddEnvActuator()
                 .AddInfoActuator()
+                .ConfigureLogging(loggingBuilder =>
+                {
+                    loggingBuilder.AddDynamicConsole();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

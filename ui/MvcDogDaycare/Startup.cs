@@ -1,10 +1,15 @@
+using System;
+using System.Threading;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Steeltoe.Connector.MySql.EFCore;
+using Microsoft.Extensions.Logging;
+using MvcDogDaycare.Services;
+using Steeltoe.Common.Http.Discovery;
+using Steeltoe.Connector.PostgreSql.EFCore;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Management.Endpoint.Env;
 using Steeltoe.Management.Endpoint.Health;
@@ -37,11 +42,20 @@ namespace MvcDogDaycare
             services.AddMetricsActuator();
             services.AddInfoActuator();
             services.AddEnvActuator();
-            
-            services.AddDiscoveryClient();
-            
+
+            if (!Configuration.GetValue<bool>("DisableServiceDiscovery"))
+            {
+                services.AddDiscoveryClient();
+                services.AddHttpClient<IFacility, FacilityService>()
+                    .AddHttpMessageHandler<DiscoveryHttpMessageHandler>();
+            }
+            else
+            {
+                services.AddHttpClient<IFacility, FacilityService>();
+            }
+
             services.AddDbContext<DogDaycareContext>(options =>
-                options.UseMySql(Configuration));
+                options.UseNpgsql(Configuration));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -60,7 +74,6 @@ namespace MvcDogDaycare
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            UpdateDatabase(app);
             
             app.UseRouting();
 
@@ -72,19 +85,6 @@ namespace MvcDogDaycare
                     name: "default",
                     pattern: "{controller=Reservations}/{action=Index}/{id?}");
             });
-        }
-
-        private static void UpdateDatabase(IApplicationBuilder app)
-        {
-            using (var serviceScope = app.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
-                .CreateScope())
-            {
-                using (var context = serviceScope.ServiceProvider.GetService<DogDaycareContext>())
-                {
-                    context.Database.Migrate();
-                }
-            }
         }
     }
 }

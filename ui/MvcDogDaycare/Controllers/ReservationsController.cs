@@ -1,9 +1,13 @@
+using System;
 using System.Data.Common;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using MvcDogDaycare.Models;
+using MvcDogDaycare.Services;
 using Steeltoe.Discovery;
 using ui.MvcDogDaycare.Data;
 
@@ -12,17 +16,25 @@ namespace MvcDogDaycare.Controllers
     public class ReservationsController : Controller
     {
         private readonly DogDaycareContext _context;
-        private readonly IDiscoveryClient _discoveryClient;
+        private readonly IFacility _facilityService;
+        private readonly ILogger<ReservationsController> _logger;
 
-        public ReservationsController(DogDaycareContext context, IDiscoveryClient discoveryClient)
+        public ReservationsController(
+            DogDaycareContext context, 
+            IFacility facilityService, 
+            ILogger<ReservationsController> logger)
         {
             _context = context;
-            _discoveryClient = discoveryClient;
+            _facilityService = facilityService;
+            _logger = logger;
         }
 
         // GET
         public async Task<IActionResult> Index()
         {
+            var facilities = await _facilityService.GetFacilitiesAsync();
+            ViewBag.Facilities = facilities;
+
             return View(await _context.Reservation.Select(reservation => new Reservation
             {
                 Id = reservation.Id,
@@ -35,7 +47,8 @@ namespace MvcDogDaycare.Controllers
 
         [HttpPost, ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateReservation([Bind("PetId, DropOffDttm, PickUpDttm")] Reservation reservation)
+        public async Task<IActionResult> CreateReservation(
+            [Bind("PetId, FacilityId, DropOffDttm, PickUpDttm")] Reservation reservation)
         {
             if (reservation == null)
             {
@@ -60,6 +73,9 @@ namespace MvcDogDaycare.Controllers
 
         public async Task<IActionResult> Create()
         {
+            var facilities = await _facilityService.GetFacilitiesAsync();
+            ViewBag.Facilities = facilities;
+            
             var dogs = await _context.Dog.ToListAsync();
             ViewBag.ListOfDogs = dogs;
             
@@ -95,6 +111,9 @@ namespace MvcDogDaycare.Controllers
 
             var dogs = await _context.Dog.ToListAsync();
             ViewBag.ListOfDogs = dogs;
+
+            var facilities = await _facilityService.GetFacilitiesAsync();
+            ViewBag.Facilities = facilities;
             if (reservation == null)
             {
                 return NotFound();
