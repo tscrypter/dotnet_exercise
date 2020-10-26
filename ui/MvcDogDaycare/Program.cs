@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Steeltoe.Discovery.Client;
+using Steeltoe.Management.Endpoint;
 using ui.MvcDogDaycare.Data;
 
 namespace MvcDogDaycare
@@ -32,6 +34,13 @@ namespace MvcDogDaycare
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .AddHealthActuator()
+                .AddHypermediaActuator()
+                .AddTraceActuator()
+                .AddLoggersActuator()
+                .AddMetricsActuator()
+                .AddEnvActuator()
+                .AddInfoActuator()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MvcDogDaycare.Models;
+using Steeltoe.Discovery;
 using ui.MvcDogDaycare.Data;
 
 namespace MvcDogDaycare.Controllers
@@ -10,10 +11,12 @@ namespace MvcDogDaycare.Controllers
     public class ReservationsController : Controller
     {
         private readonly DogDaycareContext _context;
+        private readonly IDiscoveryClient _discoveryClient;
 
-        public ReservationsController(DogDaycareContext context)
+        public ReservationsController(DogDaycareContext context, IDiscoveryClient discoveryClient)
         {
             _context = context;
+            _discoveryClient = discoveryClient;
         }
 
         // GET

@@ -9,3 +9,28 @@ services:
         - MYSQL_PASSWORD=dogdaycare
       ports:
         - 3306:3306
+    eureka:
+      image: steeltoeoss/eureka-server
+      ports:
+        - 8761:8761
+      depends_on:
+        - mysql
+    spring-boot-admin:
+      environment:
+        - EUREKA_SERVICE_URL=http://eureka:8761
+      image: "hananiel/spring-boot-admin-eureka-sample"
+      ports:
+        - "8889:8080"
+      depends_on:
+        - eureka
+#    mvc:
+#      build:
+#        context: ui/MvcDogDaycare/
+#      image: tscrypter/dogdaycaremvc:latest
+#      ports:
+#        - "80:8080"
+#      environment:
+#        - "MySql__client__ConnectionString=server=mysql;user=dogdaycare;password=dogdaycare;database=daycare"
+#        - "Eureka__Client__ServiceUrl=http://eureka:8761/eureka"
+#      depends_on:
+#        - eureka

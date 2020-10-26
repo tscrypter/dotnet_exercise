@@ -17,3 +17,4 @@ docker-compose up && docker-compose down
     - https://github.com/dotnet/Scaffolding/issues/1384
   - Ambiguous Steeltoe documentation on connectors
     - https://docs.steeltoe.io/api/v3/connectors/mysql.html "Then add a reference to the appropriate Steeltoe connector NuGet package."
+  - Eureka Discovery instance documentation for second table should come before the table.
