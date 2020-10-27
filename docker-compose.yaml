@@ -31,33 +31,31 @@ services:
         - "8889:8080"
       depends_on:
         - eureka
-    # FacilityService:
-    #   build:
-    #     context: api/FacilityService/
-    #   image: tscrypter/facilityservice:latest
-    #   ports:
-    #     - "8081:80"
-    #   environment:
-    #     - "Postgres__Client__Host=facility-db"
-    #     - "Postgres__Client__Port=5432"
-    #     - "Postgres__Client__Username=dogdaycare"
-    #     - "Postgres__Client__Password=dogdaycare"
-    #     - "Postgres__Client__DataBase=facility"
-    #     - "ASPNETCORE_ENVIRONMENT=Development"
-    #   depends_on:
-    #     - spring-boot-admin
-    # mvc:
-    #   build:
-    #     context: ui/MvcDogDaycare/
-    #   image: tscrypter/dogdaycaremvc:latest
-    #   ports:
-    #     - "8080:80"
-    #   environment:
-    #     - "Postgres__Client__Host=mvc-db"
-    #     - "Postgres__Client__Port=5432"
-    #     - "Postgres__Client__Username=dogdaycare"
-    #     - "Postgres__Client__Password=dogdaycare"
-    #     - "Postgres__Client__DataBase=daycare"
-    #     - "ASPNETCORE_ENVIRONMENT=Development"
-    #   depends_on:
-    #     - FacilityService
+    FacilityService:
+      build:
+        context: FacilityService/
+      image: tscrypter/facilityservice:latest
+      ports:
+        - "8081:80"
+      environment:
+        - "Postgres__Client__Host=facility-db"
+        - "Postgres__Client__Port=5432"
+        - "Postgres__Client__Username=dogdaycare"
+        - "Postgres__Client__Password=dogdaycare"
+        - "Postgres__Client__DataBase=facility"
+      depends_on:
+        - spring-boot-admin
+    mvc:
+      build:
+        context: DayCareMvc/
+      image: tscrypter/dogdaycaremvc:latest
+      ports:
+        - "8080:80"
+      environment:
+        - "Postgres__Client__Host=mvc-db"
+        - "Postgres__Client__Port=5432"
+        - "Postgres__Client__Username=dogdaycare"
+        - "Postgres__Client__Password=dogdaycare"
+        - "Postgres__Client__DataBase=daycare"
+      depends_on:
+        - FacilityService
