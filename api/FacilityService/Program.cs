@@ -8,6 +8,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Steeltoe.Common.Hosting;
+using Steeltoe.Discovery.Client;
+using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Extensions.Configuration.Placeholder;
 using Steeltoe.Extensions.Logging;
 using Steeltoe.Management.Endpoint;
 
@@ -37,7 +41,6 @@ namespace FacilityService
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .AddAllActuators() // Add all of the Steeltoe actuators
                 .ConfigureLogging((builderContext, loggingBuilder) =>
                 {
                     // Add dynamic logging
@@ -46,6 +49,17 @@ namespace FacilityService
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .AddCloudFoundryConfiguration()
+                .AddDiscoveryClient()
+                .AddHealthActuator()
+                .AddHypermediaActuator()
+                .AddTraceActuator()
+                .AddLoggersActuator()
+                .AddMetricsActuator()
+                .AddEnvActuator()
+                .AddInfoActuator()
+                .AddPlaceholderResolver()
+                .UseCloudHosting(80);
     }
 }

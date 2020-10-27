@@ -43,7 +43,6 @@ services:
         - "Postgres__Client__Username=dogdaycare"
         - "Postgres__Client__Password=dogdaycare"
         - "Postgres__Client__DataBase=facility"
-        - "ASPNETCORE_ENVIRONMENT=Development"
       depends_on:
         - spring-boot-admin
     mvc:
@@ -58,6 +57,5 @@ services:
         - "Postgres__Client__Username=dogdaycare"
         - "Postgres__Client__Password=dogdaycare"
         - "Postgres__Client__DataBase=daycare"
-        - "ASPNETCORE_ENVIRONMENT=Development"
       depends_on:
         - FacilityService

@@ -45,11 +45,6 @@ namespace FacilityService
             services.AddInfoActuator();
             services.AddEnvActuator();
 
-            if (!Configuration.GetValue<bool>("DisableServiceDiscovery"))
-            {
-                services.AddDiscoveryClient();
-            }
-
             services.AddDbContext<FacilityContext>(options =>
                 options.UseNpgsql(Configuration));
             

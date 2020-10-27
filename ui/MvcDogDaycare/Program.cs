@@ -3,7 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Steeltoe.Common.Hosting;
 using Steeltoe.Discovery.Client;
+using Steeltoe.Extensions.Configuration.CloudFoundry;
+using Steeltoe.Extensions.Configuration.Placeholder;
 using Steeltoe.Extensions.Logging;
 using Steeltoe.Management.Endpoint;
 using ui.MvcDogDaycare.Data;
@@ -35,13 +38,6 @@ namespace MvcDogDaycare
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .AddHealthActuator()
-                .AddHypermediaActuator()
-                .AddTraceActuator()
-                .AddLoggersActuator()
-                .AddMetricsActuator()
-                .AddEnvActuator()
-                .AddInfoActuator()
                 .ConfigureLogging(loggingBuilder =>
                 {
                     loggingBuilder.AddDynamicConsole();
@@ -49,6 +45,17 @@ namespace MvcDogDaycare
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .AddCloudFoundryConfiguration()
+                .AddDiscoveryClient()
+                .AddHealthActuator()
+                .AddHypermediaActuator()
+                .AddTraceActuator()
+                .AddLoggersActuator()
+                .AddMetricsActuator()
+                .AddEnvActuator()
+                .AddInfoActuator()
+                .AddPlaceholderResolver()
+                .UseCloudHosting(80);
     }
 }

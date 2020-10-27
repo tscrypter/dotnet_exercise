@@ -45,7 +45,6 @@ namespace MvcDogDaycare
 
             if (!Configuration.GetValue<bool>("DisableServiceDiscovery"))
             {
-                services.AddDiscoveryClient();
                 services.AddHttpClient<IFacility, FacilityService>()
                     .AddHttpMessageHandler<DiscoveryHttpMessageHandler>();
             }

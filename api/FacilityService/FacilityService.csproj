@@ -11,8 +11,12 @@
     </PackageReference>
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
     <PackageReference Include="Steeltoe.Connector.EFCore" Version="3.0.1" />
-    <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Extensions.Logging.DynamicLogger" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Common.Hosting" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.PlaceholderCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.EndpointCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.TracingCore" Version="3.0.1" />
   </ItemGroup>
