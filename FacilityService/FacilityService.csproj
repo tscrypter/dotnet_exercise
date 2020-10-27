@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Steeltoe.Common.Hosting" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Discovery.ClientCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Discovery.Eureka" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.CloudFoundryCore" Version="3.0.1" />
+    <PackageReference Include="Steeltoe.Extensions.Configuration.PlaceholderCore" Version="3.0.1" />
     <PackageReference Include="Steeltoe.Management.EndpointCore" Version="3.0.1" />
   </ItemGroup>
 

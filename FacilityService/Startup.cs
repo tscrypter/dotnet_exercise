@@ -32,26 +32,15 @@ namespace FacilityService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            
-            // Add actuators
             services.AddHealthActuator(Configuration);
-            services.AddInfoActuator(Configuration);
-            services.AddHypermediaActuator(Configuration);
-            services.AddTraceActuator(Configuration);
-            services.AddEnvActuator(Configuration);
-            services.AddLoggersActuator(Configuration);
-
+            
+            // Add framework services
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-
             app.UseHttpsRedirection();
 
             app.UseRouting();

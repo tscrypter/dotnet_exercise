@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Steeltoe.Common.Http.Discovery;
 using Steeltoe.Discovery.Client;
 using Steeltoe.Management.Endpoint.Env;
 using Steeltoe.Management.Endpoint.Health;
@@ -39,6 +40,12 @@ namespace DayCareMvc
             services.AddTraceActuator(Configuration);
             services.AddEnvActuator(Configuration);
             services.AddLoggersActuator(Configuration);
+
+            services.AddHttpClient("facilities", c =>
+                {
+                    c.BaseAddress = new Uri("http://facilityApi/weatherforecast");
+                })
+                .AddServiceDiscovery();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
