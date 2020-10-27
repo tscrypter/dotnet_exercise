@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Steeltoe.Common.Hosting;
 using Steeltoe.Discovery.Client;
+using Steeltoe.Extensions.Configuration.CloudFoundry;
 using Steeltoe.Management.Endpoint;
 
 namespace DayCareMvc
@@ -15,11 +17,16 @@ namespace DayCareMvc
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHost CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                })
+                .AddCloudFoundryConfiguration()
                 .AddHealthActuator()
                 .AddInfoActuator()
                 .AddHypermediaActuator()
@@ -27,9 +34,7 @@ namespace DayCareMvc
                 .AddEnvActuator()
                 .AddLoggersActuator()
                 .AddDiscoveryClient()
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                });
+                .UseCloudHosting(80)
+                .Build();
     }
 }
