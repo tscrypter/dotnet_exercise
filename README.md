@@ -11,13 +11,13 @@ docker-compose up && docker-compose down
 
 
 ### Notes  
-  - Scaffolding for MVC does not work on linux
+  - [ ] Scaffolding for MVC does not work on linux
     - https://github.com/dotnet/Scaffolding/issues/1418
     - https://github.com/dotnet/Scaffolding/issues/1393
     - https://github.com/dotnet/Scaffolding/issues/1384
-  - Ambiguous Steeltoe documentation on connectors
+  - [ ] Ambiguous Steeltoe documentation on connectors
     - https://docs.steeltoe.io/api/v3/connectors/mysql.html "Then add a reference to the appropriate Steeltoe connector NuGet package."
-  - Setting "Eureka__Client__ServiceUrl=http://eureka:8761" throws the following exception
+  - [x] Setting "Eureka__Client__ServiceUrl=http://eureka:8761" throws the following exception
     ```
     System.NullReferenceException: Object reference not set to an instance of an object.
        at Steeltoe.Discovery.Eureka.EurekaInstanceOptions.ApplyConfigUrls(List`1 addresses, String wildcard_hostname)
@@ -37,4 +37,5 @@ docker-compose up && docker-compose down
        at Steeltoe.Discovery.Eureka.EurekaApplicationInfoManager.get_InstanceConfig()
        at Steeltoe.Discovery.Eureka.EurekaApplicationInfoManager..ctor(IOptionsMonitor`1 instConfig, ILoggerFactory logFactory)
     ```
-    If not overriding the `ServiceUrl` property and running on the host network, the default setting works and the service registers with Eureka
+    If not overriding the `ServiceUrl` property and running on the host network, the default setting works and the service registers with Eureka  
+    :heavy_check_mark: Discovered this is fixed by adding a reference to `Steeltoe.Common.Hosting:3.0.1` and `UseCloudHosting(port)`
