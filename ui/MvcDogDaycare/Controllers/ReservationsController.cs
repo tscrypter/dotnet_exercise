@@ -1,48 +1,46 @@
-using System;
-using System.Data.Common;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MvcDogDaycare.Models;
 using MvcDogDaycare.Services;
-using Steeltoe.Discovery;
-using ui.MvcDogDaycare.Data;
 
 namespace MvcDogDaycare.Controllers
 {
     public class ReservationsController : Controller
     {
-        private readonly DogDaycareContext _context;
         private readonly IFacility _facilityService;
-        private readonly ILogger<ReservationsController> _logger;
+        private readonly IDog _dogService;
+        private readonly IReservation _reservationService;
 
         public ReservationsController(
-            DogDaycareContext context, 
             IFacility facilityService, 
-            ILogger<ReservationsController> logger)
+            IDog dogService, 
+            IReservation reservationService)
         {
-            _context = context;
             _facilityService = facilityService;
-            _logger = logger;
+            _dogService = dogService;
+            _reservationService = reservationService;
         }
 
         // GET
         public async Task<IActionResult> Index()
         {
             var facilities = await _facilityService.GetFacilitiesAsync();
-            ViewBag.Facilities = facilities;
-
-            return View(await _context.Reservation.Select(reservation => new Reservation
+            var dogs = await _dogService.GetDogs();
+            var reservations = await _reservationService.GetReservations();
+            var reservationsResults = reservations.Select(r => new Reservation
             {
-                Id = reservation.Id,
-                DropOffDttm = reservation.DropOffDttm,
-                PickUpDttm = reservation.PickUpDttm,
-                Pet = reservation.Pet,
-                PetId = reservation.PetId
-            }).OrderBy(r => r.DropOffDttm).ToListAsync());
+                DropOffDttm = r.DropOffDttm,
+                FacilityId = r.FacilityId,
+                Id = r.Id,
+                PetId = r.PetId,
+                Pet = dogs.First(d => d.Id == r.PetId),
+                PickUpDttm = r.PickUpDttm
+            }).ToList();
+
+            return View(reservationsResults);
         }
 
         [HttpPost, ActionName("Create")]
@@ -55,18 +53,15 @@ namespace MvcDogDaycare.Controllers
                 return NotFound();
             }
 
-            var reservationDog = await _context.Dog
-                .Where(dog => dog.Id == reservation.PetId)
-                .FirstOrDefaultAsync();
+            var reservationDog = _dogService.GetDog(reservation.PetId);
             if (reservationDog == null)
             {
                 return NotFound();
             }
 
-            reservation.Pet = reservationDog;
+            reservation.Pet = await reservationDog;
 
-            await _context.Reservation.AddAsync(reservation);
-            await _context.SaveChangesAsync();
+            await _reservationService.CreateReservation(reservation);
 
             return RedirectToAction("Index");
         }
@@ -76,7 +71,7 @@ namespace MvcDogDaycare.Controllers
             var facilities = await _facilityService.GetFacilitiesAsync();
             ViewBag.Facilities = facilities;
             
-            var dogs = await _context.Dog.ToListAsync();
+            var dogs = await _dogService.GetDogs();
             ViewBag.ListOfDogs = dogs;
             
             return View();
@@ -89,8 +84,7 @@ namespace MvcDogDaycare.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
-                .FirstOrDefaultAsync(record => record.Id == id);
+            var reservation = await _reservationService.GetReservation(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -106,18 +100,19 @@ namespace MvcDogDaycare.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
-                .FirstOrDefaultAsync(record => record.Id == id);
+            var reservation = await _reservationService.GetReservation(id.Value);
 
-            var dogs = await _context.Dog.ToListAsync();
-            ViewBag.ListOfDogs = dogs;
-
-            var facilities = await _facilityService.GetFacilitiesAsync();
-            ViewBag.Facilities = facilities;
             if (reservation == null)
             {
                 return NotFound();
             }
+            
+            var dogs = await _dogService.GetDogs();
+            ViewBag.ListOfDogs = dogs;
+
+            var facilities = await _facilityService.GetFacilitiesAsync();
+            ViewBag.Facilities = facilities;
+            
             return View(reservation);
         }
 
@@ -134,10 +129,9 @@ namespace MvcDogDaycare.Controllers
             {
                 try
                 {
-                    var dog = await _context.Dog.FirstOrDefaultAsync(dog => dog.Id == reservation.PetId);
+                    var dog = await _dogService.GetDog(reservation.PetId);
                     reservation.Pet = dog;
-                    _context.Update(reservation);
-                    await _context.SaveChangesAsync();
+                    await _reservationService.UpdateReservation(reservation);
                 }
                 catch (DbUpdateException)
                 {
@@ -145,10 +139,7 @@ namespace MvcDogDaycare.Controllers
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
+                    throw;
                 }
 
                 return RedirectToAction("Index");
@@ -159,7 +150,7 @@ namespace MvcDogDaycare.Controllers
 
         private bool ReservationExists(int reservationId)
         {
-            return _context.Reservation.Any(reservation => reservation.Id == reservationId);
+            return _reservationService.DoesReservationExist(reservationId);
         }
 
         public async Task<IActionResult> Delete(int? id)
@@ -169,16 +160,7 @@ namespace MvcDogDaycare.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation
-                .Select(res => new Reservation
-                {
-                    Id = res.Id,
-                    DropOffDttm = res.DropOffDttm,
-                    PickUpDttm = res.PickUpDttm,
-                    Pet = res.Pet,
-                    PetId = res.PetId
-                })
-                .FirstOrDefaultAsync(record => record.Id == id);
+            var reservation = await _reservationService.GetReservation(id.Value);
             if (reservation == null)
             {
                 return NotFound();
@@ -196,9 +178,8 @@ namespace MvcDogDaycare.Controllers
                 return NotFound();
             }
 
-            var reservation = await _context.Reservation.FindAsync(id);
-            _context.Reservation.Remove(reservation);
-            await _context.SaveChangesAsync();
+            var reservation = await _reservationService.GetReservation(id.Value);
+            await _reservationService.DeleteReservation(reservation);
             return RedirectToAction("Index");
         }
     }

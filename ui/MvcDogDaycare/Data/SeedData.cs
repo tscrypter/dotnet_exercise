@@ -20,13 +20,13 @@ namespace ui.MvcDogDaycare.Data
                     return; // DB has already been seeded
                 }
 
-                var fido = new Dog
+                var fido = new DogDao
                 {
                     ContactNumber = "555-555-5555",
                     DateOfBirth = DateTime.Today.AddYears(-6),
                     Name = "Fido"
                 };
-                var clifford = new Dog
+                var clifford = new DogDao
                 {
                     ContactNumber = "111-111-1111",
                     DateOfBirth = DateTime.Today.AddYears(-1),

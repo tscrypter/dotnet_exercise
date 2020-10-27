@@ -11,6 +11,6 @@ namespace ui.MvcDogDaycare.Data
         }
 
         public DbSet<Reservation> Reservation { get; set; }
-        public DbSet<Dog> Dog { get; set; }
+        public DbSet<DogDao> Dog { get; set; }
     }
 }

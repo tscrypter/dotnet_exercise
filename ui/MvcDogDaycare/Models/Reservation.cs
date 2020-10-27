@@ -1,7 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Mvc;
+using MvcDogDaycare.Services;
 
 namespace MvcDogDaycare.Models
 {
@@ -25,7 +27,7 @@ namespace MvcDogDaycare.Models
         [Required]
         [HiddenInput]
         public int PetId { get; set; }
-        public Dog Pet { get; set; }
+        public DogDao Pet { get; set; }
 
         [Required]
         [DisplayName("Daycare Facility")]

@@ -1,3 +1,4 @@
+@using MvcDogDaycare.Services
 @model IEnumerable<MvcDogDaycare.Models.Reservation>
 
 @{
@@ -20,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.PickUpDttm)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FacilityId)
+            </th>
             <th></th>
         </tr>
         </thead>
@@ -37,8 +41,10 @@
                     @Html.DisplayFor(modelItem => reservation.PickUpDttm)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => reservation.FacilityId)
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@reservation.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@reservation.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@reservation.Id">Delete</a>
                 </td>
             </tr>

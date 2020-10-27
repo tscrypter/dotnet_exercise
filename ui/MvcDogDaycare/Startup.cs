@@ -53,6 +53,9 @@ namespace MvcDogDaycare
                 services.AddHttpClient<IFacility, FacilityService>();
             }
 
+            services.AddSingleton<IReservation, ReservationService>();
+            services.AddSingleton<IDog, Dog>();
+
             services.AddDbContext<DogDaycareContext>(options =>
                 options.UseNpgsql(Configuration));
         }
